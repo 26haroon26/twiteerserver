@@ -159,14 +159,6 @@ router.post("/login", (req, res) => {
   );
 });
 router.post("/logout", (req, res) => {
-//   dono correct hen
-
-  // res.cookie("Token", " ", {
-  //   maxAge: 0,
-  //   httpOnly: true,
-  //   sameSite: 'none',
-  //   secure: true
-  // });
 
   res.clearCookie("Token",{
     httpOnly: true,

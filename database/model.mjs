@@ -9,16 +9,18 @@ const userSchema = new mongoose.Schema({
 });
 export const userModel = mongoose.model("Users", userSchema);
 
-const productSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  price: Number,
-  description: String,
-  owner: { type: mongoose.ObjectId, required: true },
+const tweetSchema = new mongoose.Schema({
+  text: { type: String, required: true },
+  // owner: { type: mongoose.ObjectId, required: true },
+  //ab direct hr post me name save kraden ge take querry na krne parhe
+  ownerName: String,
+  profilePhoto:String,
+  image:String,
   isDeleted: { type: Boolean, default: false },
   createdOn: { type: Date, default: Date.now },
 });
 
-export const productModel = mongoose.model("products", productSchema);
+export const tweetModel = mongoose.model("tweets", tweetSchema);
 
 const mongodbURI =
   process.env.mongodbURI ||

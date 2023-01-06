@@ -2,7 +2,7 @@ import express from "express";
 import path from "path";
 import cors from "cors";
 import authApis from "./apis/auth.mjs";
-import productApis from "./apis/tweet.mjs";
+import tweetApis from "./apis/tweet.mjs";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import { userModel } from "./database/model.mjs";
@@ -14,8 +14,7 @@ const port = process.env.PORT || 4000;
 app.use(
   cors({
     origin: [
-      "https://resplendent-croissant-d895ff.netlify.app",
-      "https://dainty-banoffee-c78400.netlify.app",
+      "https://eclectic-marzipan-999456.netlify.app",
       "http://localhost:3000",
     ],
     credentials: true,
@@ -58,7 +57,7 @@ app.use("/api/v1", (req, res, next) => {
     }
   });
 });
-app.use("/api/v1", productApis);
+app.use("/api/v1", tweetApis);
 
 // ye function he jo do bar use ho ga
 
