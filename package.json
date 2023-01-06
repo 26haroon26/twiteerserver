@@ -1,0 +1,19 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "this is a twiteer server connected with mongodb",
+  "main": "sever.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/26haroon26/twiteerserver.git"
+  },
+  "author": "26haroon26@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/26haroon26/twiteerserver/issues"
+  },
+  "homepage": "https://github.com/26haroon26/twiteerserver#readme"
+}
