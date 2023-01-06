@@ -4,7 +4,9 @@
   "description": "this is a twiteer server connected with mongodb",
   "main": "sever.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.mjs",
+    "dev": "nodemon server.mjs"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,14 @@
   "bugs": {
     "url": "https://github.com/26haroon26/twiteerserver/issues"
   },
-  "homepage": "https://github.com/26haroon26/twiteerserver#readme"
+  "homepage": "https://github.com/26haroon26/twiteerserver#readme",
+  "dependencies": {
+    "bcrypt-inzi": "^1.0.7",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.8.2",
+    "nodemon": "^2.0.20"
+  }
 }
