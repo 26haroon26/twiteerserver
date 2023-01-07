@@ -19,6 +19,12 @@ const tweetSchema = new mongoose.Schema({
   isDeleted: { type: Boolean, default: false },
   createdOn: { type: Date, default: Date.now },
 });
+const otpSchema = new mongoose.Schema({
+  otp: { type: String },
+  email: { type: String, required: true },
+  createdOn: { type: Date, default: Date.now },
+});
+export const otpModel = mongoose.model("Otps", otpSchema);
 
 export const tweetModel = mongoose.model("tweets", tweetSchema);
 
