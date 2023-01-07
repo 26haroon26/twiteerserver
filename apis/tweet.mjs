@@ -159,7 +159,8 @@ router.put("/tweet/:id", async (req, res) => {
   try {
     let data = await tweetModel
       .findOneAndUpdate(
-        { _id: id, owner: new mongoose.Types.ObjectId(body.token._id) },
+        { _id: id,
+           owner: new mongoose.Types.ObjectId(body.token._id) },
         {
           text: body.text,
         },
