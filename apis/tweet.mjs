@@ -41,17 +41,17 @@ router.get("/tweets", (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.token._id);
 
   tweetModel.find(
-    { owner: `${userId}`, isDeleted: false },
+    { owner: userId, isDeleted: false },
     {},
     {
       sort: { _id: -1 },
       limit: 100,
       skip: 0,
-      // populate:
-      // {
-      //     path: "owner",
-      //     select: 'firstName lastName email'
-      // }
+      populate:
+      {
+          path: "owner",
+          select: 'firstName lastName email'
+      }
     },
     (err, data) => {
       if (!err) {
@@ -115,12 +115,13 @@ router.get("/tweet/:text", (req, res) => {
 });
 router.delete("/tweet/:id", (req, res) => {
   const id = req.params.id;
+  const body = req.body;
 
   tweetModel.deleteOne(
     {
       _id: id,
       // ye isley lgaya he ke amne he tweet delete
-      owner: `${new mongoose.Types.ObjectId(body.token._id)}`,
+      owner: new mongoose.Types.ObjectId(body.token._id),
     },
     (err, deletedData) => {
       console.log("deleted: ", deletedData);

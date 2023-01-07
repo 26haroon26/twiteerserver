@@ -43,13 +43,13 @@ router.post("/signup", (req, res) => {
 
   req.body.email = req.body.email.toLowerCase();
 
-  userModel.findOne({ email: body.email }, (err, data) => {
+  userModel.findOne({ email: body.email }, (err, user) => {
     if (!err) {
-      console.log("data: ", data);
+      console.log("user: ", user);
 
-      if (data) {
+      if (user) {
         // user already exist
-        console.log("user already exist: ", data);
+        console.log("user already exist: ", user);
         res.status(400).send({
           message: "user already exist,, please try a different email",
         });
@@ -67,7 +67,7 @@ router.post("/signup", (req, res) => {
             },
             (err, result) => {
               if (!err) {
-                console.log("data saved: ", result);
+                console.log("user saved: ", result);
                 res.status(201).send({ message: "user is created" });
               } else {
                 console.log("db error: ", err);

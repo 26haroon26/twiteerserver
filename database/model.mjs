@@ -11,11 +11,11 @@ export const userModel = mongoose.model("Users", userSchema);
 
 const tweetSchema = new mongoose.Schema({
   text: { type: String, required: true },
-  // owner: { type: mongoose.ObjectId, required: true },
+  owner: { type: mongoose.ObjectId, required: true },
   //ab direct hr post me name save kraden ge take querry na krne parhe
-  ownerName: String,
-  profilePhoto:String,
-  image:String,
+  // ownerName: String,
+  // profilePhoto:String,
+  // image:String,
   isDeleted: { type: Boolean, default: false },
   createdOn: { type: Date, default: Date.now },
 });
