@@ -165,6 +165,7 @@ router.post("/forget_password", async (req, res) => {
       );
       return;
     }
+    console.log(body.email);
     const user = await userModel
       .findOne({ email: body.email }, "firstName email password")
       .exec();
