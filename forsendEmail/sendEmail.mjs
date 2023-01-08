@@ -24,4 +24,4 @@ const SendEmail = async (options) => {
   // res.json(info);
   // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 };
-module.exports = SendEmail;
+export default SendEmail;
