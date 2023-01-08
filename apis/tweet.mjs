@@ -14,7 +14,7 @@ router.post("/tweet", (req, res) => {
     return;
   }
 
-  console.log(body.text);
+  // console.log(body.text);
 
   tweetModel.create(
     {
@@ -23,7 +23,7 @@ router.post("/tweet", (req, res) => {
     },
     (err, saved) => {
       if (!err) {
-        console.log(saved);
+        // console.log(saved);
 
         res.send({
           message: "tweet added successfully",
@@ -92,7 +92,7 @@ router.get("/tweetFeed", (req, res) => {
   );
 });
 router.get("/tweet/:text", (req, res) => {
-  console.log(req.params.text);
+  // console.log(req.params.text);
   const querrytext = req.params.text;
   tweetModel.find({ text: { $regex: `${querrytext}` } }, (err, data) => {
     if (!err) {
@@ -124,7 +124,7 @@ router.delete("/tweet/:id", (req, res) => {
       owner: new mongoose.Types.ObjectId(body.token._id),
     },
     (err, deletedData) => {
-      console.log("deleted: ", deletedData);
+      // console.log("deleted: ", deletedData);
       if (!err) {
         if (deletedData.deletedCount !== 0) {
           res.send({
@@ -168,7 +168,7 @@ router.put("/tweet/:id", async (req, res) => {
       )
       .exec();
 
-    console.log("updated: ", data);
+    // console.log("updated: ", data);
 
     res.send({
       message: "tweet modified successfully",

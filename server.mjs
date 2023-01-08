@@ -37,7 +37,7 @@ app.use("/api/v1", (req, res, next) => {
   }
   jwt.verify(req.cookies.Token, SECRET, (err, decodedData) => {
     if (!err) {
-      console.log("decodedData: ", decodedData);
+      // console.log("decodedData: ", decodedData);
 
       const nowDate = new Date().getTime() / 1000;
 
@@ -50,7 +50,7 @@ app.use("/api/v1", (req, res, next) => {
           secure: true,
         });
       } else {
-        console.log("token approved");
+        // console.log("token approved");
 
         req.body.token = decodedData;
         next();
@@ -77,13 +77,13 @@ const getUser = async (req, res) => {
       .findOne({ _id: _id }, "email firstName lastName -_id")
       .exec();
     if (!user) {
-      res.status(404).send({});
+      res.status(404).send({message:"user not found"});
       return;
     } else {
       res.status(200).send(user);
     }
   } catch (error) {
-    console.log("error: ", error);
+    // console.log("error: ", error);
     res.status(500).send({
       message: "something went wrong on server",
     });
@@ -100,8 +100,8 @@ app.post("/api/v1/change_password", async (req, res) => {
     const currentpassword = body.current_password;
     const newpassword = body.new_password;
     const _id = req.body.token._id;
-    console.log(currentpassword);
-    console.log(newpassword);
+    // console.log(currentpassword);
+    // console.log(newpassword);
     const user = await userModel.findOne({ _id: _id }, "email password").exec();
 
     if (!user) {
@@ -119,7 +119,7 @@ app.post("/api/v1/change_password", async (req, res) => {
     });
     return;
   } catch (error) {
-    console.log("error", error);
+    // console.log("error", error);
     res.status(500).send(error);
   }
 });

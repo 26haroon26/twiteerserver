@@ -2,9 +2,8 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import { userModel, otpModel } from "../database/model.mjs";
 import { stringToHash, varifyHash } from "bcrypt-inzi";
-import { nanoid, customAlphabet } from "nanoid";
-import nodemailer from "nodemailer";
-
+import { customAlphabet } from "nanoid";
+import SendEmail from "../forsendEmail/sendEmail.mjs";
 const router = express.Router();
 const SECRET = process.env.SECRET || "topsceret";
 
@@ -28,11 +27,11 @@ router.post("/signup", (req, res) => {
 
   userModel.findOne({ email: body.email }, (err, user) => {
     if (!err) {
-      console.log("user: ", user);
+      // console.log("user: ", user);
 
       if (user) {
         // user already exist
-        console.log("user already exist: ", user);
+        // console.log("user already exist: ", user);
         res.status(400).send({
           message: "user already exist,, please try a different email",
         });
@@ -50,10 +49,10 @@ router.post("/signup", (req, res) => {
             },
             (err, result) => {
               if (!err) {
-                console.log("user saved: ", result);
+                // console.log("user saved: ", result);
                 res.status(201).send({ message: "user is created" });
               } else {
-                console.log("db error: ", err);
+                // console.log("db error: ", err);
                 res.status(500).send({ message: "internal server error" });
               }
             }
@@ -61,7 +60,7 @@ router.post("/signup", (req, res) => {
         });
       }
     } else {
-      console.log("db error: ", err);
+      // console.log("db error: ", err);
       res.status(500).send({ message: "db error in query" });
       return;
     }
@@ -88,11 +87,11 @@ router.post("/login", (req, res) => {
     "firstName lastName email password",
     (err, data) => {
       if (!err) {
-        console.log("data: ", data);
+        // console.log("data: ", data);
 
         if (data) {
           varifyHash(body.password, data.password).then((isMatched) => {
-            console.log("isMatched: ", isMatched);
+            // console.log("isMatched: ", isMatched);
 
             if (isMatched) {
               var token = jwt.sign(
@@ -123,18 +122,18 @@ router.post("/login", (req, res) => {
               });
               return;
             } else {
-              console.log("user not found");
+              // console.log("user not found");
               res.status(401).send({ message: "Incorrect email or password" });
               return;
             }
           });
         } else {
-          console.log("user not found");
+          // console.log("user not found");
           res.status(401).send({ message: "Incorrect email or password" });
           return;
         }
       } else {
-        console.log("db error: ", err);
+        // console.log("db error: ", err);
         res.status(500).send({ message: "login failed, please try later" });
         return;
       }
@@ -162,7 +161,7 @@ router.post("/forget_password", async (req, res) => {
         `required fields missing, request example: 
                     {
                         "email": "abc@abc.com",
-                                          }`
+                     }`
       );
       return;
     }
@@ -174,28 +173,11 @@ router.post("/forget_password", async (req, res) => {
     const OTP = nanoid();
     // console.log(OTP);
 
-    let testAccount = await nodemailer.createTestAccount();
-
-    let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false,
-      auth: {
-        user: "lauryn9@ethereal.email",
-        pass: "nPKtkNk5T5bCjSt3ay",
-      },
+    await SendEmail({
+      email: user.email,
+      subject: `Froget paswword Email`,
+      text: `Your OTP code is here \n\n ${OTP} \n\n Please Don't Share this code`,
     });
-    let info = await transporter.sendMail({
-      from: '"Muhammad Haroon 👻" <26haroon26@gmail.com>',
-      to: "areebmuhammad96@gmail.com",
-      subject: "Hello ✔",
-      text: `Your OTP <br/>${OTP}`,
-      html: "<b>Hello world?</b>",
-    });
-
-    console.log("Message sent: %s", info.messageId);
-    res.json(info);
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     const hashOTP = await stringToHash(OTP);
     otpModel.create({ otp: hashOTP, email: body.email });
@@ -204,7 +186,7 @@ router.post("/forget_password", async (req, res) => {
     });
     return;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send({ message: error });
   }
 });
@@ -212,6 +194,8 @@ router.post("/forget_password", async (req, res) => {
 router.post("/check_otp", async (req, res) => {
   try {
     let body = req.body;
+    body.email = body.email.toLowerCase();
+
     if (!body.otpNumber || !body.new_password || !body.email) {
       res.status(400).send(
         `required fields missing, request example: 
@@ -223,12 +207,16 @@ router.post("/check_otp", async (req, res) => {
       );
       return;
     }
-    const user = await userModel
-      .findOne({ email: body.email }, "firstName email otp password")
+    // otp he bh ya nahi
+    const otpRecord = await otpModel
+      .findOne({ email: body.email })
+      .sort({ _id: -1 })
       .exec();
-    if (!user) throw new Error("User not found");
-    const isMatched = await verifyOTP(body.otpNumber, user.otp);
+    if (!otpRecord) throw new Error("OTP not found");
+
+    const isMatched = await varifyHash(body.otpNumber, otpRecord.otp);
     if (!isMatched) throw new Error("password is not match");
+
     const newhashPassword = await stringToHash(body.password);
     await userModel
       .updateOne({ email: body.email }, { password: newhashPassword })
