@@ -47,11 +47,10 @@ router.get("/tweets", (req, res) => {
       sort: { _id: -1 },
       limit: 100,
       skip: 0,
-      populate:
-      {
-          path: "owner",
-          select: 'firstName lastName email'
-      }
+      populate: {
+        path: "owner",
+        select: "firstName lastName email",
+      },
     },
     (err, data) => {
       if (!err) {
@@ -159,8 +158,7 @@ router.put("/tweet/:id", async (req, res) => {
   try {
     let data = await tweetModel
       .findOneAndUpdate(
-        { _id: id,
-           owner: new mongoose.Types.ObjectId(body.token._id) },
+        { _id: id, owner: new mongoose.Types.ObjectId(body.token._id) },
         {
           text: body.text,
         },

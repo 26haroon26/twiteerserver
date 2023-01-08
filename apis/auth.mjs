@@ -165,7 +165,7 @@ router.post("/forget_password", async (req, res) => {
       );
       return;
     }
-    console.log(body.email);
+    // console.log(body.email);
     const user = await userModel
       .findOne({ email: body.email }, "firstName email password")
       .exec();
@@ -175,11 +175,10 @@ router.post("/forget_password", async (req, res) => {
     // console.log(OTP);
 
     await SendEmail({
-      email: user.email,
+      email: body.email,
       subject: `Froget paswword Email`,
       text: `Your OTP code is here \n\n ${OTP} \n\n Please Don't Share this code`,
     });
-
     const hashOTP = await stringToHash(OTP);
     otpModel.create({ otp: hashOTP, email: body.email });
     res.send({
@@ -197,7 +196,7 @@ router.post("/check_otp", async (req, res) => {
     let body = req.body;
     body.email = body.email.toLowerCase();
 
-    if (!body.otpNumber || !body.new_password || !body.email) {
+    if (!body.otp || !body.new_password || !body.email) {
       res.status(400).send(
         `required fields missing, request example: 
                     {
@@ -215,10 +214,10 @@ router.post("/check_otp", async (req, res) => {
       .exec();
     if (!otpRecord) throw new Error("OTP not found");
 
-    const isMatched = await varifyHash(body.otpNumber, otpRecord.otp);
+    const isMatched = await varifyHash(body.otp, otpRecord.otp);
     if (!isMatched) throw new Error("password is not match");
 
-    const newhashPassword = await stringToHash(body.password);
+    const newhashPassword = await stringToHash(body.new_password);
     await userModel
       .updateOne({ email: body.email }, { password: newhashPassword })
       .exec();
