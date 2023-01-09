@@ -3,7 +3,7 @@ import path from "path";
 import cors from "cors";
 import authApis from "./apis/auth.mjs";
 import tweetApis from "./apis/tweet.mjs";
-import checkEmailVerified from "./apis/checkEmail.mjs";
+// import checkEmailVerified from "./apis/checkEmail.mjs";
 import changePassword from "./apis/changePassword.mjs";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
@@ -63,7 +63,7 @@ app.use("/api/v1", tweetApis);
 
 app.use("/api/v1",changePassword);
 
-app.use("/api/v1",checkEmailVerified);
+// app.use("/api/v1",checkEmailVerified);
 
 
 // ye function he jo do bar use ho ga
