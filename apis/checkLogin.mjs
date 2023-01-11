@@ -7,7 +7,7 @@ const router = express();
 router.use("/api/v1", (req, res, next) => {
   if (!req?.cookies?.Token) {
     res.status(401).send({
-      message: "include http-only credentials with every request",
+      message: "include http-only credential with every request",
     });
     return;
   }
