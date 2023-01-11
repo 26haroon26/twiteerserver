@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 const SECRET = process.env.SECRET || "topsceret";
 const router = express();
 
-router.use("/", (req, res, next) => {
+router.use((req, res, next) => {
   if (!req?.cookies?.Token) {
     res.status(401).send({
       message: "include http-only credential with every request",
