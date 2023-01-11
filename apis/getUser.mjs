@@ -28,7 +28,7 @@ const getUser = async (req, res) => {
   }
 };
 
-router.get("/api/v1/profile", getUser);
-router.get("/api/v1/profile/:id", getUser);
+router.get("/profile", getUser);
+router.get("/profile/:id", getUser);
 
 export default router;
