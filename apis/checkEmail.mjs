@@ -9,7 +9,6 @@ router.use(cookieParser());
 router.post("/check_my_email", async (req, res) => {
   try {
     let body = req.body;
-    // let _id = body.token._id;
     body.email = body.email.toLowerCase();
 
     if (!body.email) {
@@ -25,18 +24,18 @@ router.post("/check_my_email", async (req, res) => {
       .findOne({ email: body.email }, "firstName email password")
       .exec();
     if (!user) throw new Error("User not found");
-    
+
     await SendEmail({
-        email: body.email,
-        subject: `Email Verification`,
-        text: 'https://eclectic-marzipan-999456.netlify.app/api/v1/verify_my_email',
+      email: body.email,
+      subject: `Email Verification`,
+      text: "https://eclectic-marzipan-999456.netlify.app/api/v1/verify_my_email",
     });
     res.send({
       message: "check your email",
     });
     return;
   } catch (error) {
-    res.status(500).send({ message:error});
+    res.status(500).send({ message: error });
   }
 });
 

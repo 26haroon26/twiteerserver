@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  isVerified :{type:Boolean, default:false},
+  isVerified: { type: Boolean, default: false },
   createdOn: { type: Date, default: Date.now },
 });
 export const userModel = mongoose.model("Users", userSchema);
@@ -22,6 +22,7 @@ const tweetSchema = new mongoose.Schema({
 });
 const otpSchema = new mongoose.Schema({
   otp: { type: String },
+  isUsed: { type: Boolean, default: false },
   email: { type: String, required: true },
   createdOn: { type: Date, default: Date.now },
 });

@@ -4,6 +4,7 @@ import { userModel, otpModel } from "../database/model.mjs";
 import { stringToHash, varifyHash } from "bcrypt-inzi";
 import { customAlphabet } from "nanoid";
 import SendEmail from "../forsendEmail/sendEmail.mjs";
+import moment from "moment/moment.js";
 const router = express.Router();
 const SECRET = process.env.SECRET || "topsceret";
 
@@ -27,11 +28,8 @@ router.post("/signup", (req, res) => {
 
   userModel.findOne({ email: body.email }, (err, user) => {
     if (!err) {
-      // console.log("user: ", user);
-
       if (user) {
         // user already exist
-        // console.log("user already exist: ", user);
         res.status(400).send({
           message: "user already exist,, please try a different email",
         });
@@ -49,10 +47,8 @@ router.post("/signup", (req, res) => {
             },
             (err, result) => {
               if (!err) {
-                // console.log("user saved: ", result);
                 res.status(201).send({ message: "user is created" });
               } else {
-                // console.log("db error: ", err);
                 res.status(500).send({ message: "internal server error" });
               }
             }
@@ -60,7 +56,6 @@ router.post("/signup", (req, res) => {
         });
       }
     } else {
-      // console.log("db error: ", err);
       res.status(500).send({ message: "db error in query" });
       return;
     }
@@ -87,12 +82,8 @@ router.post("/login", (req, res) => {
     "firstName lastName email password",
     (err, data) => {
       if (!err) {
-        // console.log("data: ", data);
-
         if (data) {
           varifyHash(body.password, data.password).then((isMatched) => {
-            // console.log("isMatched: ", isMatched);
-
             if (isMatched) {
               var token = jwt.sign(
                 {
@@ -122,18 +113,15 @@ router.post("/login", (req, res) => {
               });
               return;
             } else {
-              // console.log("user not found");
               res.status(401).send({ message: "Incorrect email or password" });
               return;
             }
           });
         } else {
-          // console.log("user not found");
           res.status(401).send({ message: "Incorrect email or password" });
           return;
         }
       } else {
-        // console.log("db error: ", err);
         res.status(500).send({ message: "login failed, please try later" });
         return;
       }
@@ -153,7 +141,6 @@ router.post("/logout", (req, res) => {
 router.post("/forget_password", async (req, res) => {
   try {
     let body = req.body;
-    // let _id = body.token._id;
     body.email = body.email.toLowerCase();
 
     if (!body.email) {
@@ -165,14 +152,12 @@ router.post("/forget_password", async (req, res) => {
       );
       return;
     }
-    // console.log(body.email);
     const user = await userModel
       .findOne({ email: body.email }, "firstName email password")
       .exec();
     if (!user) throw new Error("User not found");
     const nanoid = customAlphabet("1234567890", 5);
     const OTP = nanoid();
-    // console.log(OTP);
 
     await SendEmail({
       email: body.email,
@@ -186,7 +171,6 @@ router.post("/forget_password", async (req, res) => {
     });
     return;
   } catch (error) {
-    // console.log(error);
     res.status(500).send({ message: error });
   }
 });
@@ -212,7 +196,18 @@ router.post("/check_otp", async (req, res) => {
       .findOne({ email: body.email })
       .sort({ _id: -1 })
       .exec();
-    if (!otpRecord) throw new Error("OTP not found");
+
+    // is se ek otp 2 bar use nahi hoge
+    if (!otpRecord) throw new Error("Invalid OTP");
+    if (otpRecord.isUsed) throw new Error("Invalid OTP");
+    await otpModel.updateOne({ isUsed: true }).exec();
+
+    // is se otp 5 minutes bad use nahi hoge
+    const now = moment();
+    const otpCreatedTime = moment(otpRecord.createdOn);
+    const differenceInMin = now.diff(otpCreatedTime, "minutes");
+
+    if (differenceInMin >= 5) throw new Error("Invalid OTP");
 
     const isMatched = await varifyHash(body.otp, otpRecord.otp);
     if (!isMatched) throw new Error("password is not match");

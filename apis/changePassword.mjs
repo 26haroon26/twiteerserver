@@ -10,8 +10,6 @@ router.post("/change_password", async (req, res) => {
     const currentpassword = body.current_password;
     const newpassword = body.new_password;
     const _id = req.body.token._id;
-    // console.log(currentpassword);
-    // console.log(newpassword);
     const user = await userModel.findOne({ _id: _id }, "email password").exec();
 
     if (!user) {
@@ -29,7 +27,6 @@ router.post("/change_password", async (req, res) => {
     });
     return;
   } catch (error) {
-    // console.log("error", error);
     res.status(500).send(error);
   }
 });
