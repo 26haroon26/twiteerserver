@@ -31,7 +31,7 @@ router.post("/check_my_email", async (req, res) => {
     await SendEmail({
       email: body.email,
       subject: `Email Verification`,
-      text: "http://localhost:3000/api/v1/verify_my_email",
+      text: "https://eclectic-marzipan-999456.netlify.app/api/v1/verify_my_email",
     });
     res.send({
       message: "check your email",
