@@ -21,14 +21,17 @@ router.post("/check_my_email", async (req, res) => {
       return;
     }
     const user = await userModel
-      .findOne({ email: body.email }, "firstName email password")
+      .findOne(
+        { email: body.email, isVerified: false },
+        "firstName email password"
+      )
       .exec();
     if (!user) throw new Error("User not found");
 
     await SendEmail({
       email: body.email,
       subject: `Email Verification`,
-      text: "https://eclectic-marzipan-999456.netlify.app/api/v1/verify_my_email",
+      text: "http://localhost:3000/api/v1/verify_my_email",
     });
     res.send({
       message: "check your email",
@@ -46,7 +49,7 @@ router.post("/verify_my_email", async (req, res) => {
     });
     return;
   }
-  jwt.verify(req.cookies.Token, SECRET, (err, decodedData) => {
+  jwt.verify(req.cookies.Token, SECRET,(err, decodedData) => {
     if (!err) {
       const nowDate = new Date().getTime() / 1000;
 
@@ -60,9 +63,10 @@ router.post("/verify_my_email", async (req, res) => {
         });
       } else {
         req.body.token = decodedData;
-        userModel
-          .updateOne({ email: req.body.token.email }, { isVerified: true })
+     userModel
+          .updateOne({ email: req.body.token.email },{},{ isVerified: true })
           .exec();
+
         res.send({ message: "youtr email is verified" });
       }
     } else {

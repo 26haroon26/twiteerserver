@@ -13,7 +13,7 @@ const getUser = async (req, res) => {
 
   try {
     const user = await userModel
-      .findOne({ _id: _id }, "email firstName lastName -_id")
+      .findOne({ _id: _id }, "email firstName lastName isVerified -_id")
       .exec();
     if (!user) {
       res.status(404).send({ message: "user not found" });
