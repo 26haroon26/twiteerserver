@@ -1,36 +1,91 @@
 import express from "express";
 import mongoose from "mongoose";
 import { tweetModel } from "../database/model.mjs";
+import multer from "multer";
+import fs from "fs";
+import jwt from "jsonwebtoken";
+import bucket from "../firebaseAdmin/index.mjs";
+
+const storageConfig = multer.diskStorage({
+  destination: "./uploads/",
+  filename: function (req, file, cb) {
+    console.log("mul-file: ", file);
+    cb(null, `${new Date().getTime()}-${file.originalname}`);
+  },
+});
+var uploadMiddleware = multer({ storage: storageConfig });
 
 const router = express.Router();
 
-router.post("/tweet", (req, res) => {
-  const body = req.body;
+router.post("/tweet", uploadMiddleware.any(), (req, res) => {
+  try {
+    const body = req.body;
+    const token = jwt.decode(req.cookies.Token);
 
-  if (!body.text) {
-    res.status(400).send({
-      message: "required parameters missing",
-    });
-    return;
-  }
-
-  tweetModel.create(
-    {
-      text: body.text,
-      owner: new mongoose.Types.ObjectId(body.token._id),
-    },
-    (err, saved) => {
-      if (!err) {
-        res.send({
-          message: "tweet added successfully",
-        });
-      } else {
-        res.status(500).send({
-          message: "server error",
-        });
-      }
+    if (
+      // validation
+      !body.text
+    ) {
+      res.status(400).send({
+        message: "required parameters missing",
+      });
+      return;
     }
-  );
+
+    bucket.upload(
+      req.files[0].path,
+      {
+        destination: `tweetPictures/${req.files[0].filename}`,
+      },
+      function (err, file, apiResponse) {
+        if (!err) {
+          file
+            .getSignedUrl({
+              action: "read",
+              expires: "03-09-2999",
+            })
+            .then((urlData, err) => {
+              if (!err) {
+                console.log("public downloadable url: ", urlData[0]); 
+
+                try {
+                  fs.unlinkSync(req.files[0].path);
+                  //file removed
+                } catch (err) {
+                  console.error(err);
+                }
+                tweetModel.create(
+                  {
+                    text: body.text,
+                    imageUrl: urlData[0],
+                    owner: new mongoose.Types.ObjectId(token._id),
+                  },
+                  (err, saved) => {
+                    if (!err) {
+                      console.log("saved: ", saved);
+
+                      res.send({
+                        message: "tweet added successfully",
+                      });
+                    } else {
+                      console.log("err: ", err);
+                      res.status(500).send({
+                        message: "server error",
+                      });
+                    }
+                  }
+                );
+              }
+            });
+        } else {
+          console.log("err: ", err);
+          res.status(500).send();
+        }
+      }
+    );
+  } catch (error) {
+    console.log("error: ", error);
+  }
 });
 
 router.get("/tweets", (req, res) => {
