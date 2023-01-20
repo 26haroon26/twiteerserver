@@ -61,17 +61,13 @@ router.post("/verify_my_email", async (req, res) => {
           sameSite: "none",
           secure: true,
         });
+        userModel
+          .updateOne({ email: req.body.token.email }, { isVerified: true })
+          .exec();
       } else {
         req.body.token = decodedData;
-        userModel
-          .findOneAndUpdate(
-            { email: req.body.token.email },
-            { isVerified: true },
-            { new: true }
-          )
-          .exec();
 
-        res.send({ message: "your email is verified" });
+        res.send({ message: "youtr email is verified" });
       }
     } else {
       res.status(401).send("invalid token");
