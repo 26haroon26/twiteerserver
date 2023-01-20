@@ -49,7 +49,7 @@ router.post("/verify_my_email", async (req, res) => {
     });
     return;
   }
-  jwt.verify(req.cookies.Token, SECRET,(err, decodedData) => {
+  jwt.verify(req.cookies.Token, SECRET, (err, decodedData) => {
     if (!err) {
       const nowDate = new Date().getTime() / 1000;
 
@@ -63,11 +63,15 @@ router.post("/verify_my_email", async (req, res) => {
         });
       } else {
         req.body.token = decodedData;
-     userModel
-          .updateOne({ email: req.body.token.email },{},{ isVerified: true })
+        userModel
+          .findOneAndUpdate(
+            { email: req.body.token.email },
+            { isVerified: true },
+            { new: true }
+          )
           .exec();
 
-        res.send({ message: "youtr email is verified" });
+        res.send({ message: "your email is verified" });
       }
     } else {
       res.status(401).send("invalid token");
