@@ -16,7 +16,7 @@ const tweetSchema = new mongoose.Schema({
   //ab direct hr post me name save kraden ge take querry na krne parhe
   // ownerName: String,
   // profilePhoto:String,
-  // image:String,
+  imageUrl:String,
   isDeleted: { type: Boolean, default: false },
   createdOn: { type: Date, default: Date.now },
 });
