@@ -79,7 +79,7 @@ router.post("/login", (req, res) => {
 
   userModel.findOne(
     { email: body.email },
-    "firstName lastName email password",
+    "firstName lastName email password isVerified",
     (err, data) => {
       if (!err) {
         if (data) {
@@ -108,6 +108,7 @@ router.post("/login", (req, res) => {
                   firstName: data.firstName,
                   lastName: data.lastName,
                   email: data.email,
+                  isVerified:data.isVerified,
                   _id: data._id,
                 },
               });
