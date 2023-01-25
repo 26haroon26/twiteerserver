@@ -1,7 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 
-const SECRET = process.env.SECRET || "topsceret";
+const SECRET = process.env.SECRET;
 const router = express();
 
 router.use((req, res, next) => {

@@ -16,7 +16,7 @@ const tweetSchema = new mongoose.Schema({
   //ab direct hr post me name save kraden ge take querry na krne parhe
   // ownerName: String,
   // profilePhoto:String,
-  imageUrl:String,
+  imageUrl: String,
   isDeleted: { type: Boolean, default: false },
   createdOn: { type: Date, default: Date.now },
 });
@@ -30,9 +30,7 @@ export const otpModel = mongoose.model("Otps", otpSchema);
 
 export const tweetModel = mongoose.model("tweets", tweetSchema);
 
-const mongodbURI =
-  process.env.mongodbURI ||
-  "mongodb+srv://abc:abc@cluster0.qgyid76.mongodb.net/tweetsdata?retryWrites=true&w=majority";
+const mongodbURI = process.env.mongodbURI;
 
 mongoose.set("strictQuery", false);
 mongoose.connect(mongodbURI);

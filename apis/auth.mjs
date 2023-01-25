@@ -6,7 +6,7 @@ import { customAlphabet } from "nanoid";
 import SendEmail from "../forsendEmail/sendEmail.mjs";
 import moment from "moment/moment.js";
 const router = express.Router();
-const SECRET = process.env.SECRET || "topsceret";
+const SECRET = process.env.SECRET;
 
 router.post("/signup", (req, res) => {
   let body = req.body;

@@ -10,7 +10,7 @@ import changePassword from "./apis/changePassword.mjs";
 import cookieParser from "cookie-parser";
 
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT;
 
 app.use(
   cors({
