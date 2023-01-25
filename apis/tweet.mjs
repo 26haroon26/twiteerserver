@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import bucket from "../firebaseAdmin/index.mjs";
 
 const storageConfig = multer.diskStorage({
-  destination: "./uploads/",
+  // destination: "./uploads/",
   filename: function (req, file, cb) {
     console.log("mul-file: ", file);
     cb(null, `${new Date().getTime()}-${file.originalname}`);
