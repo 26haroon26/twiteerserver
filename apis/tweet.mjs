@@ -9,7 +9,7 @@ import bucket from "../firebaseAdmin/index.mjs";
 const storageConfig = multer.diskStorage({
   // destination: "./uploads/",
   filename: function (req, file, cb) {
-    console.log("mul-file: ", file);
+    // console.log("mul-file: ", file);
     cb(null, `${new Date().getTime()}-${file.originalname}`);
   },
 });
@@ -46,13 +46,13 @@ router.post("/tweet", uploadMiddleware.any(), (req, res) => {
             })
             .then((urlData, err) => {
               if (!err) {
-                console.log("public downloadable url: ", urlData[0]); 
+                // console.log("public downloadable url: ", urlData[0]); 
 
                 try {
                   fs.unlinkSync(req.files[0].path);
                   //file removed
                 } catch (err) {
-                  console.error(err);
+                  // console.error(err);
                 }
                 tweetModel.create(
                   {
@@ -62,13 +62,13 @@ router.post("/tweet", uploadMiddleware.any(), (req, res) => {
                   },
                   (err, saved) => {
                     if (!err) {
-                      console.log("saved: ", saved);
+                      // console.log("saved: ", saved);
 
                       res.send({
                         message: "tweet added successfully",
                       });
                     } else {
-                      console.log("err: ", err);
+                      // console.log("err: ", err);
                       res.status(500).send({
                         message: "server error",
                       });
@@ -78,13 +78,13 @@ router.post("/tweet", uploadMiddleware.any(), (req, res) => {
               }
             });
         } else {
-          console.log("err: ", err);
+          // console.log("err: ", err);
           res.status(500).send();
         }
       }
     );
   } catch (error) {
-    console.log("error: ", error);
+    // console.log("error: ", error);
   }
 });
 

@@ -54,7 +54,7 @@ router.post("/verify_my_email", async (req, res) => {
       if (decodedData.exp < nowDate)
         throw new Error("token expired please login account again");
       req.body.token = decodedData;
-      console.log(req.body.token);
+      // console.log(req.body.token);
     });
     userModel
       .updateOne({ _id: req.body.token._id }, { isVerified: true })
