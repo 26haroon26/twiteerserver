@@ -1,10 +1,11 @@
 import admin from 'firebase-admin';
+const {PRIVATE_KEY} = JSON.parse(process.env.PRIVATE_KEY)
 
 var serviceAccount ={
     "type": "service_account",
     "project_id": `${process.env.PROJECT_ID}`,
     "private_key_id": `${process.env.PRIVATE_KEY_ID}`,
-    "private_key": `${process.env.PRIVATE_KEY}`,
+    "private_key": `${PRIVATE_KEY}`,
     "client_email": `firebase-adminsdk-xh28u@${process.env.PROJECT_ID}.iam.gserviceaccount.com`,
     "client_id": `${process.env.CLIENT_ID}`,
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
