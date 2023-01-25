@@ -30,7 +30,9 @@ export const otpModel = mongoose.model("Otps", otpSchema);
 
 export const tweetModel = mongoose.model("tweets", tweetSchema);
 
-const mongodbURI = process.env.mongodbURI;
+const mongodbURI =
+  process.env.mongodbURI ||
+  "mongodb+srv://abc:abc@cluster0.qgyid76.mongodb.net/tweetsdata?retryWrites=true&w=majority";
 
 mongoose.set("strictQuery", false);
 mongoose.connect(mongodbURI);
